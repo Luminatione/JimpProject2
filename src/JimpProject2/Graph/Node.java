@@ -3,13 +3,13 @@ package JimpProject2.Graph;
 import java.util.ArrayList;
 
 public class Node {
-    ArrayList<Edge> edeges;
+    ArrayList<Edge> edges;
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\t");
-        for(Edge edge : edeges)
+        for(Edge edge : edges)
         {
             sb.append(edge).append(" ");
         }

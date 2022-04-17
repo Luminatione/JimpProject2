@@ -1,4 +1,4 @@
-package JimpProject2.Graph;
+package JimpProject2.graph;
 
 import java.util.ArrayList;
 

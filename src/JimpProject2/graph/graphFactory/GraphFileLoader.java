@@ -1,13 +1,12 @@
-package JimpProject2.Graph.GraphFactory;
+package JimpProject2.graph.graphFactory;
 
-import JimpProject2.Exceptions.InvalidFileFormatException;
-import JimpProject2.Graph.Graph;
-import JimpProject2.Graph.Node;
-import JimpProject2.Graph.Edge;
+import JimpProject2.exceptions.InvalidFileFormatException;
+import JimpProject2.graph.Graph;
+import JimpProject2.graph.Node;
+import JimpProject2.graph.Edge;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class GraphFileLoader extends GraphFactory

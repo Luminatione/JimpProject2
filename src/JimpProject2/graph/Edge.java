@@ -1,8 +1,8 @@
-package JimpProject2.Graph;
+package JimpProject2.graph;
 
 public class Edge {
-    int to = 0;
-    double weight = 0.0f;
+    public int to = 0;
+    public double weight = 0.0f;
 
     public Edge() {}
     public Edge(int to, double weight)

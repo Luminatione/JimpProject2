@@ -1,6 +1,8 @@
-package JimpProject2.Graph;
+package JimpProject2.graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class Node {
     ArrayList<Edge> edges;
@@ -8,6 +10,13 @@ public class Node {
     public Node(ArrayList<Edge> edges)
     {
         this.edges = edges;
+    }
+
+    public ArrayList<Edge> getEdges()
+    {
+        ArrayList<Edge> result = new ArrayList<>();
+        Collections.copy(result, edges);
+        return result;
     }
 
     @Override

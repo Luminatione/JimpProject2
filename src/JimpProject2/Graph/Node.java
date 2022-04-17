@@ -5,6 +5,11 @@ import java.util.ArrayList;
 public class Node {
     ArrayList<Edge> edges;
 
+    public Node(ArrayList<Edge> edges)
+    {
+        this.edges = edges;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

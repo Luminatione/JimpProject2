@@ -7,6 +7,8 @@ import JimpProject2.graph.Edge;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class GraphFileLoader extends GraphFactory
@@ -24,35 +26,36 @@ public class GraphFileLoader extends GraphFactory
         Graph graph;
         try(Scanner scanner = new Scanner(new File(fileName)))
         {
-             int rows = readIntFromScanner(scanner);
-             int columns = readIntFromScanner(scanner);
-             graph = new Graph(rows, columns);
-             ArrayList<Edge> edges = null;
-             for(int i = 0; i < rows * columns; i++)
-             {
-                 edges = new ArrayList<>();
-                 int to = readIntFromScanner(scanner);
-                 double weight = readDoubleFromScanner(scanner);
-                 edges.add(new Edge(to, weight));
-             }
-             graph.addNode(new Node(edges));
+            graph = loadGraph(scanner);
         }
         return graph;
     }
-    private int readIntFromScanner(Scanner scanner) throws InvalidFileFormatException
-    {
-        if(scanner.hasNextInt())
+
+    private Graph loadGraph(Scanner scanner) throws Exception {
+        Graph graph;
+        int rows = Integer.parseInt(scanner.next());
+        int columns = Integer.parseInt(scanner.next());
+        graph = new Graph(rows, columns);
+        scanner.nextLine();
+        for (int i = 0; i < columns * rows; i++)
         {
-            throw new InvalidFileFormatException();
+            parseLine(scanner, graph);
         }
-        return scanner.nextInt();
+        return graph;
     }
-    private double readDoubleFromScanner(Scanner scanner) throws InvalidFileFormatException
-    {
-        if(scanner.hasNextDouble())
+
+    private void parseLine(Scanner scanner, Graph graph) throws Exception {
+        if(!scanner.hasNextLine())
         {
             throw new InvalidFileFormatException();
         }
-        return scanner.nextDouble();
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(scanner.nextLine().split("[ :\t]")));
+        tokens.removeAll(Collections.singleton(""));
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int j = 0; j < tokens.size(); j+=2)
+        {
+            edges.add(new Edge(Integer.parseInt(tokens.get(j)), Double.parseDouble(tokens.get(j + 1))));
+        }
+        graph.addNode(new Node(edges));
     }
 }

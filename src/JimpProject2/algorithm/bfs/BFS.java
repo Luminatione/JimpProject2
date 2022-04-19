@@ -31,7 +31,6 @@ public class BFS extends Algorithm<Boolean> {
                 visitsState.set(currentNodeIndex, true);
             }
         }
-        visited--;
         return visited == graph.getColumns() * graph.getRows();
     }
 }

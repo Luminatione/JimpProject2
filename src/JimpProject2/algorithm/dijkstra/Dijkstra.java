@@ -4,10 +4,7 @@ import JimpProject2.algorithm.Algorithm;
 import JimpProject2.graph.Edge;
 import JimpProject2.graph.Graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class Dijkstra extends Algorithm<DijkstraResult> {
     Graph graph;
@@ -27,7 +24,7 @@ public class Dijkstra extends Algorithm<DijkstraResult> {
     public DijkstraResult compute()
     {
         result = new DijkstraResult(graph, rootIndex);
-        toVisit = new PriorityQueue<>();
+        toVisit = new PriorityQueue<>(11, Comparator.comparingDouble((Edge a) -> a.weight));
         visitsStates = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), false));
         toVisit.add(new Edge(rootIndex, 0));
         visitsStates.set(rootIndex, true);
@@ -53,7 +50,7 @@ public class Dijkstra extends Algorithm<DijkstraResult> {
         {
             if(!visitsStates.get(edge.to))
             {
-                toVisit.addAll(graph.getNode(edge.to).getEdges());
+                toVisit.add(edge);
                 visitsStates.set(edge.to, true);
             }
             double pathLengthToNeighbor = result.pathLengths.get(currentIndex) + edge.weight;

@@ -50,21 +50,21 @@ public class RandomGraphGenerator extends GraphFactory {
     private ArrayList<Integer> getNeighborIndexes(int i)
     {
         ArrayList<Integer> result = new ArrayList<>(4);
-        if(i - 1 > 0)
+        if(i - 1 >= 0)
         {
             result.add(i - 1);
         }
-        if(i / columns == (i + 1) / columns)
+        if(i / rows == (i + 1) / rows)
         {
             result.add(i + 1);
         }
-        if(i - columns > 0)
+        if(i - rows >= 0)
         {
-            result.add(i - columns);
+            result.add(i - rows);
         }
-        if(i + columns < rows * columns)
+        if(i + rows < rows * columns)
         {
-            result.add(i + columns);
+            result.add(i + rows);
         }
         return result;
     }

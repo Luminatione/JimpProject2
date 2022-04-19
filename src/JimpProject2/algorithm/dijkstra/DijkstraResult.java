@@ -20,4 +20,12 @@ public class DijkstraResult {
         ancestors = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), -1));
         pathLengths = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), Double.MAX_VALUE));
     }
+
+    @Override
+    public String toString() {
+        return "rootIndex=" + rootIndex +
+                ", ancestors=" + ancestors +
+                ", pathLengths=" + pathLengths +
+                '}';
+    }
 }

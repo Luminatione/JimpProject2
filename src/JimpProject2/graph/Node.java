@@ -14,9 +14,7 @@ public class Node {
 
     public ArrayList<Edge> getEdges()
     {
-        ArrayList<Edge> result = new ArrayList<>();
-        Collections.copy(result, edges);
-        return result;
+        return (ArrayList<Edge>) edges.clone();
     }
 
     @Override

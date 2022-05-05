@@ -50,7 +50,7 @@ public class RandomGraphGenerator extends GraphFactory {
     private ArrayList<Integer> getNeighborIndexes(int i)
     {
         ArrayList<Integer> result = new ArrayList<>(4);
-        if(i - 1 >= 0)
+        if(i / rows == (i - 1) / rows && i - 1 >= 0)
         {
             result.add(i - 1);
         }

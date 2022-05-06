@@ -42,7 +42,14 @@ public class RandomGraphGenerator extends GraphFactory {
         ArrayList<Edge> edges = new ArrayList<>(neighborsIndexes.size());
         for(Integer neighborIndex : neighborsIndexes)
         {
-            edges.add(new Edge(neighborIndex, random.nextDouble(minWeight, maxWeight)));
+            if(minWeight == maxWeight)
+            {
+                edges.add(new Edge(neighborIndex, maxWeight));
+            }
+            else
+            {
+                edges.add(new Edge(neighborIndex, random.nextDouble(minWeight, maxWeight)));
+            }
         }
         return edges;
     }

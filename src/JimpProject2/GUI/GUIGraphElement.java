@@ -16,11 +16,6 @@ public class GUIGraphElement extends JComponent implements MouseListener {
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paintComponent(g);
-    }
-
-    @Override
     public Dimension getPreferredSize() {
         return super.getPreferredSize();
     }

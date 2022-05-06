@@ -22,8 +22,8 @@ public class NodeGUI extends GUIGraphElement
         this.node = node;
     }
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.drawOval(0, 0, getPreferredSize().width, getPreferredSize().height);
         for (NodeGUI neighbor : neighbors) {
             ((Graphics2D) g).setStroke(new BasicStroke(2));

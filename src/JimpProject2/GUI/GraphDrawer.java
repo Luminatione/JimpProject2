@@ -14,21 +14,20 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class GraphDrawer {
-    Graph graph;
+    Graph graph = null;
     JPanel panel;
 
-    ArrayList<NodeGUI> nodes;
-    ArrayList<EdgeGUI> edges;
+    ArrayList<NodeGUI> nodes = new ArrayList<>();
 
     AtomicInteger nodeAvailableSpace = new AtomicInteger(0);
 
     public GraphDrawer(Graph graph, JPanel panel)
     {
-        this.graph = graph;
         this.panel = panel;
-        panel.setLayout(new GridLayout(graph.getRows(), graph.getColumns()));
-        initializeNodes();
-        initializeEdges();
+        if(graph != null)
+        {
+            setGraph(graph);
+        }
     }
 
     public void bindElementsAutoResizing(JFrame window)
@@ -41,7 +40,8 @@ public class GraphDrawer {
         });
     }
 
-    private void initializeNodes() {
+    private void initializeNodes()
+    {
         nodes = new ArrayList<>(graph.getRows() * graph.getColumns());
         for(int i = 0; i < graph.getRows() * graph.getColumns(); i++)
         {
@@ -59,9 +59,20 @@ public class GraphDrawer {
         }
     }
 
-    private void onWindowResize()
+    public void onWindowResize()
     {
+        if(graph == null)
+        {
+            return;
+        }
         nodeAvailableSpace.set(Math.min(panel.getWidth() / graph.getColumns(), panel.getHeight() / graph.getRows()));
-        System.out.println(panel.getWidth() / graph.getColumns() + " " + panel.getHeight() / graph.getRows());
+    }
+    public void setGraph(Graph graph)
+    {
+        nodes.forEach(x -> panel.remove(x));
+        this.graph = graph;
+        panel.setLayout(new GridLayout(graph.getRows(), graph.getColumns()));
+        initializeNodes();
+        initializeEdges();
     }
 }

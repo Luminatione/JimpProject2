@@ -1,18 +1,20 @@
 import JimpProject2.GUI.GUIGraphElement;
 import JimpProject2.GUI.GraphDrawer;
+import JimpProject2.algorithm.Algorithm;
+import JimpProject2.algorithm.bfs.BFS;
 import JimpProject2.graph.Graph;
 import JimpProject2.graph.graphFactory.GraphFactory;
 import JimpProject2.graph.graphFactory.GraphFileLoader;
 import JimpProject2.graph.graphFactory.RandomGraphGenerator;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 
 public class MainWindow extends JFrame
 {
-
     private Graph graph;
     private GraphFactory currentGraphFactory;
     private GraphDrawer graphDrawer;
@@ -32,10 +34,8 @@ public class MainWindow extends JFrame
     private JPanel graphPanel;
     private JTextField minTextField;
     private JTextField maxTextField;
+    private JLabel BFSOutput;
     private GUIGraphElement graphElement;
-
-
-
 
     public MainWindow()
     {
@@ -62,6 +62,7 @@ public class MainWindow extends JFrame
         bindButton(loadButton, this::onLoadClick);
         bindButton(reloadButton, this::onReloadClick);
         bindButton(saveButton, this::onSaveClick);
+        bindButton(BFSButton, this::onBFSClick);
     }
 
     private void bindButton(JButton button, Runnable func)
@@ -86,6 +87,7 @@ public class MainWindow extends JFrame
     {
         try
         {
+
             graph = currentGraphFactory.create();
             graphDrawer.setGraph(graph);
         }
@@ -106,7 +108,10 @@ public class MainWindow extends JFrame
             int y = Integer.parseInt(yTextField.getText());
             int minWeight = Integer.parseInt(minTextField.getText());
             int maxWeight = Integer.parseInt(maxTextField.getText());
-
+            if(x == 0 || y == 0)
+            {
+                throw new IllegalArgumentException("Graphs with 0 as dimension are not supported");
+            }
             currentGraphFactory = new RandomGraphGenerator(x, y, minWeight, maxWeight);
             displayGraph();
         }
@@ -114,15 +119,20 @@ public class MainWindow extends JFrame
         {
             consoleOutput.append("Wrong number format!\n");
         }
+        catch (IllegalArgumentException e)
+        {
+            consoleOutput.append(e.getMessage() + '\n');
+        }
     }
 
     private void onLoadClick()
     {
-        if (fileChooser.showOpenDialog(contentPane) == JFileChooser.APPROVE_OPTION)
+        if (fileChooser.showOpenDialog(contentPane) != JFileChooser.APPROVE_OPTION)
         {
-            currentGraphFactory = new GraphFileLoader(fileChooser.getSelectedFile().getAbsolutePath());
-            displayGraph();
+            return;
         }
+        currentGraphFactory = new GraphFileLoader(fileChooser.getSelectedFile().getAbsolutePath());
+        displayGraph();
     }
 
     private void onReloadClick()
@@ -148,12 +158,20 @@ public class MainWindow extends JFrame
         {
             consoleOutput.append("Unable to save to file");
         }
-
     }
-
+    private void onBFSClick()
+    {
+        if(graph == null)
+        {
+            consoleOutput.append("Graph had to be loaded first");
+            return;
+        }
+        boolean result = new BFS(graph).compute();
+        BFSOutput.setText(result ? "Consistent" : "Not Consistent");
+        BFSOutput.setForeground(result ? Color.green : Color.red);
+    }
     public static void main(String[] args)
     {
         MainWindow dialog = new MainWindow();
-
     }
 }

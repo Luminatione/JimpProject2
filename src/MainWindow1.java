@@ -8,9 +8,12 @@ import JimpProject2.graph.graphFactory.RandomGraphGenerator;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
+import java.io.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class MainWindow1 extends JFrame {
+public class MainWindow1 extends JFrame
+{
 
     Graph graph;
     GraphFactory currentGraphFactory;
@@ -31,6 +34,9 @@ public class MainWindow1 extends JFrame {
     private JTextField maxTextField;
     private GUIGraphElement graphElement;
 
+    JFileChooser fileChooser;
+
+
     public MainWindow1()
     {
         try
@@ -42,30 +48,44 @@ public class MainWindow1 extends JFrame {
             pack();
             setVisible(true);
             bindButtons();
+            prepareFileDialogInstance();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
     }
+
     private void bindButtons()
     {
-        generateButton.addMouseListener(new MouseAdapter() {
+        bindButton(generateButton, this::onGenerateClick);
+        bindButton(loadButton, this::onLoadClick);
+        bindButton(reloadButton, this::onReloadClick);
+        bindButton(saveButton, this::onSaveClick);
+    }
+
+    private void bindButton(JButton button, Runnable func)
+    {
+        button.addMouseListener(new MouseAdapter()
+        {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                onGenerateClick();
-            }
-        });
-        loadButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                onLoadClick();
+            public void mouseClicked(MouseEvent e)
+            {
+                func.run();
             }
         });
     }
+
+    private void prepareFileDialogInstance()
+    {
+        fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+    }
+
     private void displayGraph()
     {
-        try {
+        try
+        {
             graph = currentGraphFactory.create();
             graphDrawer.setGraph(graph);
         }
@@ -77,20 +97,20 @@ public class MainWindow1 extends JFrame {
         contentPane.revalidate();
         graphDrawer.onWindowResize();
     }
+
     private void onGenerateClick()
     {
-        int x, y, minWeight, maxWeight;
         try
         {
-            x = Integer.parseInt(xTextField.getText());
-            y = Integer.parseInt(yTextField.getText());
-            minWeight = Integer.parseInt(minTextField.getText());
-            maxWeight = Integer.parseInt(maxTextField.getText());
+            int x = Integer.parseInt(xTextField.getText());
+            int y = Integer.parseInt(yTextField.getText());
+            int minWeight = Integer.parseInt(minTextField.getText());
+            int maxWeight = Integer.parseInt(maxTextField.getText());
 
             currentGraphFactory = new RandomGraphGenerator(x, y, minWeight, maxWeight);
             displayGraph();
         }
-        catch(NumberFormatException e)
+        catch (NumberFormatException e)
         {
             consoleOutput.append("Wrong number format!\n");
         }
@@ -98,17 +118,41 @@ public class MainWindow1 extends JFrame {
 
     private void onLoadClick()
     {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        if(fileChooser.showOpenDialog(contentPane) == JFileChooser.APPROVE_OPTION)
+        if (fileChooser.showOpenDialog(contentPane) == JFileChooser.APPROVE_OPTION)
         {
             currentGraphFactory = new GraphFileLoader(fileChooser.getSelectedFile().getAbsolutePath());
             displayGraph();
         }
     }
 
+    private void onReloadClick()
+    {
+        displayGraph();
+    }
 
-    public static void main(String[] args) {
+    private void onSaveClick()
+    {
+        if (fileChooser.showSaveDialog(contentPane) != JFileChooser.APPROVE_OPTION)
+        {
+            return;
+        }
+        try (BufferedWriter outputFile = new BufferedWriter(new FileWriter(fileChooser.getSelectedFile())))
+        {
+            outputFile.write(graph.toString());
+        }
+        catch (FileNotFoundException e)
+        {
+            consoleOutput.append("Unable to create file");
+        }
+        catch (IOException e)
+        {
+            consoleOutput.append("Unable to save to file");
+        }
+
+    }
+
+    public static void main(String[] args)
+    {
         MainWindow1 dialog = new MainWindow1();
 
     }

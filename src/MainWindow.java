@@ -9,15 +9,15 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class MainWindow1 extends JFrame
+public class MainWindow extends JFrame
 {
 
-    Graph graph;
-    GraphFactory currentGraphFactory;
-    GraphDrawer graphDrawer;
+    private Graph graph;
+    private GraphFactory currentGraphFactory;
+    private GraphDrawer graphDrawer;
+
+    private JFileChooser fileChooser;
 
     private JPanel contentPane;
     private JTextField xTextField;
@@ -34,10 +34,10 @@ public class MainWindow1 extends JFrame
     private JTextField maxTextField;
     private GUIGraphElement graphElement;
 
-    JFileChooser fileChooser;
 
 
-    public MainWindow1()
+
+    public MainWindow()
     {
         try
         {
@@ -153,7 +153,7 @@ public class MainWindow1 extends JFrame
 
     public static void main(String[] args)
     {
-        MainWindow1 dialog = new MainWindow1();
+        MainWindow dialog = new MainWindow();
 
     }
 }

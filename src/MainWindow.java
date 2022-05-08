@@ -1,6 +1,5 @@
 import JimpProject2.GUI.GUIGraphElement;
 import JimpProject2.GUI.GraphDrawer;
-import JimpProject2.algorithm.Algorithm;
 import JimpProject2.algorithm.bfs.BFS;
 import JimpProject2.graph.Graph;
 import JimpProject2.graph.graphFactory.GraphFactory;
@@ -8,6 +7,8 @@ import JimpProject2.graph.graphFactory.GraphFileLoader;
 import JimpProject2.graph.graphFactory.RandomGraphGenerator;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -35,6 +36,7 @@ public class MainWindow extends JFrame
     private JTextField minTextField;
     private JTextField maxTextField;
     private JLabel BFSOutput;
+    private JTextField nodeSizeJText;
     private GUIGraphElement graphElement;
 
     public MainWindow()
@@ -42,17 +44,58 @@ public class MainWindow extends JFrame
         try
         {
             graphDrawer = new GraphDrawer(null, graphPanel);
-            graphDrawer.bindElementsAutoResizing(this);
             setContentPane(contentPane);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
             pack();
             setVisible(true);
             bindButtons();
             prepareFileDialogInstance();
+            bindNodeSizeChaneListener();
         }
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    private void bindNodeSizeChaneListener()
+    {
+        nodeSizeJText.getDocument().addDocumentListener(new DocumentListener()
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e)
+            {
+                nodeSizeJTextValueChanged();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e)
+            {
+                nodeSizeJTextValueChanged();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e)
+            {
+                nodeSizeJTextValueChanged();
+            }
+        });
+    }
+
+    private void nodeSizeJTextValueChanged()
+    {
+        try
+        {
+            graphDrawer.setGraphGUINodeSize(Integer.parseInt(nodeSizeJText.getText()));
+            repaintGraph();
+        }
+        catch (NumberFormatException e)
+        {
+            SwingUtilities.invokeLater(() ->
+            {
+                nodeSizeJText.setText("1");
+                repaintGraph();
+            });
         }
     }
 
@@ -83,11 +126,16 @@ public class MainWindow extends JFrame
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
     }
 
+    private void repaintGraph()
+    {
+        contentPane.repaint();
+        contentPane.revalidate();
+    }
+
     private void displayGraph()
     {
         try
         {
-
             graph = currentGraphFactory.create();
             graphDrawer.setGraph(graph);
         }
@@ -95,9 +143,7 @@ public class MainWindow extends JFrame
         {
             consoleOutput.append("Exception occurred during graph creation: " + e.getMessage() + "\n");
         }
-        contentPane.repaint();
-        contentPane.revalidate();
-        graphDrawer.onWindowResize();
+       repaintGraph();
     }
 
     private void onGenerateClick()

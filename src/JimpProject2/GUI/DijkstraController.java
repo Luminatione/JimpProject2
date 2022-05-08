@@ -7,10 +7,8 @@ public class DijkstraController
     private enum State { NOT_STARTED, WAITING_FOR_ROOT, WAITING_FOR_DESTINATION }
 
     private State state = State.NOT_STARTED;
-    private ArrayList<NodeGUI> nodes;
-    private NodeGUI root;
 
-    public DijkstraController(ArrayList<NodeGUI> nodes)
+    public DijkstraController()
     {
 
     }

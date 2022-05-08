@@ -16,63 +16,42 @@ import java.util.stream.Collectors;
 public class GraphDrawer {
     Graph graph = null;
     JPanel panel;
-
-    ArrayList<NodeGUI> nodes = new ArrayList<>();
-
-    AtomicInteger nodeAvailableSpace = new AtomicInteger(0);
+    GraphGUI graphGUI;
 
     public GraphDrawer(Graph graph, JPanel panel)
     {
         this.panel = panel;
+        panel.setLayout(new GridLayout());
         if(graph != null)
         {
             setGraph(graph);
         }
     }
 
-    public void bindElementsAutoResizing(JFrame window)
-    {
-        window.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                onWindowResize();
-            }
-        });
-    }
-
     private void initializeNodes()
     {
-        nodes = new ArrayList<>(graph.getRows() * graph.getColumns());
-        for(int i = 0; i < graph.getRows() * graph.getColumns(); i++)
+        if(graphGUI != null)
         {
-            NodeGUI node = new NodeGUI(graph.getNode(i), nodeAvailableSpace);
-            nodes.add(node);
-            panel.add(node);
+            panel.remove(graphGUI);
         }
+        graphGUI = new GraphGUI(graph);
+        panel.add(graphGUI);
     }
 
-    private void initializeEdges()
+
+
+    public void setGraph(Graph graph)
     {
-        for(int i = 0; i < nodes.size(); i++)
-        {
-            nodes.get(i).setNeighbors(new ArrayList<>(graph.getNode(i).getEdges().stream().map(x->nodes.get(x.to)).collect(Collectors.toList())));
-        }
+        this.graph = graph;
+        initializeNodes();
     }
 
-    public void onWindowResize()
+    public void setGraphGUINodeSize(int size)
     {
-        if(graph == null)
+        if(graphGUI == null)
         {
             return;
         }
-        nodeAvailableSpace.set(Math.min(panel.getWidth() / graph.getColumns(), panel.getHeight() / graph.getRows()));
-    }
-    public void setGraph(Graph graph)
-    {
-        nodes.forEach(x -> panel.remove(x));
-        this.graph = graph;
-        panel.setLayout(new GridLayout(graph.getRows(), graph.getColumns()));
-        initializeNodes();
-        initializeEdges();
+        graphGUI.setNodeSize(size);
     }
 }

@@ -23,9 +23,9 @@ public class GraphGUI extends GUIGraphElement
     public void paintComponent(Graphics g)
     {
         super.paintComponent(g);
-        for (int i = 0; i < graph.getColumns(); i++)
+        for (int i = 0; i < graph.getRows(); i++)
         {
-            for (int j = 0; j < graph.getRows(); j++)
+            for (int j = 0; j < graph.getColumns(); j++)
             {
                 drawNode(g, i, j);
             }
@@ -36,17 +36,18 @@ public class GraphGUI extends GUIGraphElement
     {
         ((Graphics2D) g).setStroke(new BasicStroke(1));
         g.drawOval((nodeSize + padding) * i, (nodeSize + padding) * j, nodeSize, nodeSize);
-        ArrayList<Edge> edges = graph.getNode(i * graph.getRows() + j).getEdges();
-        drawEdges(g, i, j, edges);
+        System.out.println(i + " " + j + " -> " + (i * graph.getColumns() + j));
+        drawEdges(g, i, j);
     }
 
-    private void drawEdges(Graphics g, int i, int j, ArrayList<Edge> edges)
+    private void drawEdges(Graphics g, int i, int j)
     {
+        ArrayList<Edge> edges = graph.getNode(i * graph.getColumns() + j).getEdges();
         for (Edge edge : edges)
         {
             ((Graphics2D) g).setStroke(new BasicStroke(2));
             g.drawLine((nodeSize + padding) * i + nodeSize / 2, (nodeSize + padding) * j + nodeSize / 2,
-                    (nodeSize + padding) * (edge.to / graph.getRows()) + nodeSize / 2, (nodeSize + padding) * (edge.to % graph.getRows()) + nodeSize / 2);
+                    (nodeSize + padding) * (edge.to/ (graph.getColumns())) + nodeSize / 2, (nodeSize + padding) * (edge.to % graph.getColumns()) + nodeSize / 2);
         }
     }
 
@@ -57,7 +58,7 @@ public class GraphGUI extends GUIGraphElement
         {
             return new Dimension(0, 0);
         }
-        return new Dimension((nodeSize + padding) * graph.getColumns(), (nodeSize + padding) * graph.getRows());
+        return new Dimension((nodeSize + padding) * graph.getRows(), (nodeSize + padding) * graph.getColumns());
     }
 
     public void setNodeSize(int size)
@@ -71,6 +72,7 @@ public class GraphGUI extends GUIGraphElement
     {
         int nodeX = e.getX() / (nodeSize + padding);
         int nodeY = e.getY() / (nodeSize + padding);
-        System.out.println(nodeX * graph.getRows() + nodeY);
+        System.out.println(nodeY * graph.getColumns() + nodeX);
+        System.out.println(graph.getNode(nodeY * graph.getColumns() + nodeX).getEdges());
     }
 }

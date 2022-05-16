@@ -30,7 +30,8 @@ public class GUIGraphElement extends JComponent implements MouseListener {
         return super.getMinimumSize();
     }
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e)
+    {
     }
     @Override
     public void mousePressed(MouseEvent e) {

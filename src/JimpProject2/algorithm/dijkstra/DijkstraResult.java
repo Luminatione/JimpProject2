@@ -19,6 +19,7 @@ public class DijkstraResult {
         this.rootIndex = rootIndex;
         ancestors = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), -1));
         pathLengths = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), Double.MAX_VALUE));
+        System.out.println(toString());
     }
 
     @Override

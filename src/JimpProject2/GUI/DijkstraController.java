@@ -1,6 +1,10 @@
 package JimpProject2.GUI;
 
+import JimpProject2.algorithm.dijkstra.Dijkstra;
+import JimpProject2.algorithm.dijkstra.DijkstraResult;
 import java.util.ArrayList;
+import JimpProject2.graph.Edge;
+import JimpProject2.graph.Graph;
 
 public class DijkstraController
 {
@@ -8,9 +12,10 @@ public class DijkstraController
 
     private State state = State.NOT_STARTED;
 
-    public DijkstraController()
+    public DijkstraController(int root, int destination, Graph graph)
     {
-
+        DijkstraResult result = new Dijkstra(graph, root).compute();
+        System.out.println("The root is: " + root);
     }
 
     public void onNodeClick()

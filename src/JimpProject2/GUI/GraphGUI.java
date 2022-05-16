@@ -15,6 +15,8 @@ public class GraphGUI extends GUIGraphElement
     int nodeSize = 10;
     int padding = (int) (nodeSize * 0.8f);
     public Graph graph;
+    double minWeight = Double.MAX_VALUE;
+    double maxWeight = 0;
 
     public GraphGUI(Graph graph)
     {
@@ -43,33 +45,25 @@ public class GraphGUI extends GUIGraphElement
         drawEdges(g, i, j);
     }
 
-    private Color produceColor (float weight)
-    {
-        float value = 1.0f;
-        value = value - (1.0f/weight);
-        int rgb = Color.HSBtoRGB(0.7f, 0.0f, value);
-        Color newColor = new Color(rgb);
-        return newColor;
+    public Color produceColor(double val) {
+        int gray = (int) Math.round((double) (val - minWeight) / (double) (maxWeight - minWeight) * 255.0);
+        Color color = new Color(gray, 0, 255 - gray);
+        return color;
     }
-//    private Color produceColor (float weight)
-//    {
-//
-//        float rgb = 0f;
-//        Color newColor = new Color (rgb, rgb, rgb);
-//        return newColor;
-//    }
+
     private void drawEdges(Graphics g, int i, int j)
     {
         ArrayList<Edge> edges = graph.getNode(i * graph.getColumns() + j).getEdges();
         int h = 0;
         for (Edge edge : edges)
         {
-            //double weight = edge.weight;
-
+            if (edge.weight < minWeight)
+                minWeight = edge.weight;
+            if (edge.weight > maxWeight)
+                maxWeight = edge.weight;
         }
         for (Edge edge : edges)
         {
-
             Color newColor = produceColor((float)edge.weight);
             ((Graphics2D) g).setColor(newColor);
             ((Graphics2D) g).setStroke(new BasicStroke(2));

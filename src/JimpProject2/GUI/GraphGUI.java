@@ -43,22 +43,6 @@ public class GraphGUI extends GUIGraphElement
         drawEdges(g, i, j);
     }
 
-//    private Color[] produceColorRange(int steps)
-//    {
-//        float value = 1.0f; //Starting with full brightness
-//        Color[] colors = new Color[steps];
-//        for(int ctr = 0; ctr < steps; ctr++)
-//        {
-//            value = value - (1.0f/steps); //tend to darkness
-//            int rgb = Color.HSBtoRGB(0.7f, 0.0f, value); //create a darker color
-//            //Hue is Blue, not noticeable
-//            //because Saturation is 0
-//            Color color = new Color(rgb);
-//            colors[ctr] = color;
-//        }
-//        return colors;
-//    }
-
     private Color produceColor (float weight)
     {
         float value = 1.0f;

@@ -2,13 +2,12 @@ package JimpProject2.GUI;
 
 import JimpProject2.graph.Edge;
 import JimpProject2.graph.Graph;
-import JimpProject2.GUI.DijkstraController;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class GraphGUI extends GUIGraphElement
+public class GraphGUI extends GraphGUIWrapper
 {
     int rootIndex, endIndex;
     int mouseClicks = 0;
@@ -46,6 +45,8 @@ public class GraphGUI extends GUIGraphElement
     }
 
     public Color produceColor(double val) {
+        //using hsb with normalized weight as hue and excluded violet should be tested
+        //this way whole color spectrum can be used and code can be simpler
         int gray = (int) Math.round((double) (val - minWeight) / (double) (maxWeight - minWeight) * 255.0);
         Color color = new Color(gray, 0, 255 - gray);
         return color;
@@ -54,8 +55,8 @@ public class GraphGUI extends GUIGraphElement
     private void drawEdges(Graphics g, int i, int j)
     {
         ArrayList<Edge> edges = graph.getNode(i * graph.getColumns() + j).getEdges();
-        int h = 0;
-        for (Edge edge : edges)
+        int h = 0;//redundant variable
+        for (Edge edge : edges)//can be simplified using collections
         {
             if (edge.weight < minWeight)
                 minWeight = edge.weight;
@@ -67,8 +68,10 @@ public class GraphGUI extends GUIGraphElement
             Color newColor = produceColor((float)edge.weight);
             ((Graphics2D) g).setColor(newColor);
             ((Graphics2D) g).setStroke(new BasicStroke(2));
-            g.drawLine((nodeSize + padding) * i + nodeSize / 2, (nodeSize + padding) * j + nodeSize / 2,
-                    (nodeSize + padding) * (edge.to/ (graph.getColumns())) + nodeSize / 2, (nodeSize + padding) * (edge.to % graph.getColumns()) + nodeSize / 2);
+            g.drawLine((nodeSize + padding) * i + nodeSize / 2,
+                    (nodeSize + padding) * j + nodeSize / 2,
+                    (nodeSize + padding) * (edge.to/ (graph.getColumns())) + nodeSize / 2,
+                    (nodeSize + padding) * (edge.to % graph.getColumns()) + nodeSize / 2);
         }
     }
 
@@ -95,11 +98,11 @@ public class GraphGUI extends GUIGraphElement
         int nodeY = e.getY() / (nodeSize + padding);
         System.out.println(nodeY * graph.getColumns() + nodeX);
         System.out.println(graph.getNode(nodeY * graph.getColumns() + nodeX).getEdges());
-        if (mouseClicks % 2 == 0)
+        if (mouseClicks % 2 == 0)//??
             rootIndex = nodeY * graph.getColumns() + nodeX;
         else
             endIndex = nodeY * graph.getColumns() + nodeX;
-        new DijkstraController(rootIndex, endIndex, graph);
+        new DijkstraController(rootIndex, endIndex, graph);//??
         mouseClicks++;
     }
 }

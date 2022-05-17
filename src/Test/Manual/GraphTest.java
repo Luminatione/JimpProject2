@@ -15,7 +15,7 @@ public class GraphTest {
     {
         try
         {
-            Graph graph = new GraphFileLoader("test").create();
+            Graph graph ;//= new GraphFileLoader("test").create();
             graph = new RandomGraphGenerator(3, 5, 0.1, 3.0).create();
             ArrayList<Algorithm> toCompute = new ArrayList<>();
             toCompute.add(new Dijkstra(graph, 2));

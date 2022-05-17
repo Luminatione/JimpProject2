@@ -1,4 +1,4 @@
-import JimpProject2.GUI.GUIGraphElement;
+import JimpProject2.GUI.GraphGUIWrapper;
 import JimpProject2.GUI.GraphDrawer;
 import JimpProject2.algorithm.bfs.BFS;
 import JimpProject2.graph.Graph;
@@ -37,7 +37,7 @@ public class MainWindow extends JFrame
     private JTextField maxTextField;
     private JLabel BFSOutput;
     private JTextField nodeSizeJText;
-    private GUIGraphElement graphElement;
+    private GraphGUIWrapper graphElement;
 
     public MainWindow()
     {

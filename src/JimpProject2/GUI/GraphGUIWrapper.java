@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class GUIGraphElement extends JComponent implements MouseListener {
+public class GraphGUIWrapper extends JComponent implements MouseListener {
 
-    public GUIGraphElement()
+    public GraphGUIWrapper()
     {
         super();
         enableInputMethods(true);

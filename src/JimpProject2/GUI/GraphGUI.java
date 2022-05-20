@@ -55,7 +55,6 @@ public class GraphGUI extends GraphGUIWrapper
     private void drawEdges(Graphics g, int i, int j)
     {
         ArrayList<Edge> edges = graph.getNode(i * graph.getColumns() + j).getEdges();
-        int h = 0;//redundant variable
         for (Edge edge : edges)//can be simplified using collections
         {
             if (edge.weight < minWeight)
@@ -102,7 +101,7 @@ public class GraphGUI extends GraphGUIWrapper
             rootIndex = nodeY * graph.getColumns() + nodeX;
         else
             endIndex = nodeY * graph.getColumns() + nodeX;
-        new DijkstraController(rootIndex, endIndex, graph);//??
+        DijkstraController dijksraController = new DijkstraController(rootIndex, endIndex, graph);
         mouseClicks++;
     }
 }

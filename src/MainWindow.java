@@ -143,7 +143,7 @@ public class MainWindow extends JFrame
         {
             consoleOutput.append("Exception occurred during graph creation: " + e.getMessage() + "\n");
         }
-       repaintGraph();
+        repaintGraph();
     }
 
     private void onGenerateClick()

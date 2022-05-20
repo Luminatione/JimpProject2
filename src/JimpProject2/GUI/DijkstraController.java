@@ -8,29 +8,15 @@ import JimpProject2.graph.Graph;
 
 public class DijkstraController
 {
-    private enum State { NOT_STARTED, WAITING_FOR_ROOT, WAITING_FOR_DESTINATION }
-
-    private State state = State.NOT_STARTED;
-
+    Graph graph;
+    int root, destination;
     public DijkstraController(int root, int destination, Graph graph)
     {
+        this.graph = graph;
+        this.root = root;
+        this.destination = destination;
         DijkstraResult result = new Dijkstra(graph, root).compute();
         System.out.println("The root is: " + root);
-    }
-
-    public void onNodeClick()
-    {
-        if(state == State.NOT_STARTED)
-        {
-            state = State.WAITING_FOR_ROOT;
-        }
-        else if(state == State.WAITING_FOR_ROOT)
-        {
-
-        }
-        else if(state == State.WAITING_FOR_DESTINATION)
-        {
-
-        }
+        result.toString();
     }
 }

@@ -16,7 +16,6 @@ public class DijkstraController
         this.root = root;
         this.destination = destination;
         DijkstraResult result = new Dijkstra(graph, root).compute();
-        System.out.println("The root is: " + root);
-        result.toString();
+        System.out.println("The root is: " + result.toString());
     }
 }

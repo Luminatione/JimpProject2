@@ -1,5 +1,6 @@
 import JimpProject2.GUI.GraphGUIWrapper;
 import JimpProject2.GUI.GraphDrawer;
+import JimpProject2.GUI.GraphGUI;
 import JimpProject2.algorithm.bfs.BFS;
 import JimpProject2.graph.Graph;
 import JimpProject2.graph.graphFactory.GraphFactory;
@@ -106,6 +107,7 @@ public class MainWindow extends JFrame
         bindButton(reloadButton, this::onReloadClick);
         bindButton(saveButton, this::onSaveClick);
         bindButton(BFSButton, this::onBFSClick);
+        bindButton(beginButton, this::onBeginClick);
     }
 
     private void bindButton(JButton button, Runnable func)
@@ -216,6 +218,14 @@ public class MainWindow extends JFrame
         BFSOutput.setText(result ? "Consistent" : "Not Consistent");
         BFSOutput.setForeground(result ? Color.green : Color.red);
     }
+
+    private void onBeginClick()
+    {
+        //consoleOutput.append(GraphGUI.beginClicked());
+        consoleOutput.setText(GraphGUI.beginClicked());
+       //consoleOutput.append("Length of path between " + root + " and " + destination + " is: " + result.pathLengths.get(destination));
+    }
+
     public static void main(String[] args)
     {
         MainWindow dialog = new MainWindow();

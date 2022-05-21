@@ -1,9 +1,9 @@
 package JimpProject2.algorithm.dijkstra;
 
-import JimpProject2.graph.Graph;
+        import JimpProject2.graph.Graph;
 
-import java.util.ArrayList;
-import java.util.Collections;
+        import java.util.ArrayList;
+        import java.util.Collections;
 
 public class DijkstraResult {
     public Graph graph = null;

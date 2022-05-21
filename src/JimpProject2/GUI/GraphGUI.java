@@ -1,5 +1,7 @@
 package JimpProject2.GUI;
 
+import JimpProject2.algorithm.dijkstra.Dijkstra;
+import JimpProject2.algorithm.dijkstra.DijkstraResult;
 import JimpProject2.graph.Edge;
 import JimpProject2.graph.Graph;
 
@@ -9,11 +11,11 @@ import java.util.ArrayList;
 
 public class GraphGUI extends GraphGUIWrapper
 {
-    int rootIndex, endIndex;
-    int mouseClicks = 0;
+    static int rootIndex = -1, endIndex = -1;
+    static int mouseClicks = 0;
     int nodeSize = 10;
     int padding = (int) (nodeSize * 0.8f);
-    public Graph graph;
+    public static Graph graph;
     double minWeight = Double.MAX_VALUE;
     double maxWeight = 0;
 
@@ -100,8 +102,22 @@ public class GraphGUI extends GraphGUIWrapper
         if (mouseClicks % 2 == 0)//??
             rootIndex = nodeY * graph.getColumns() + nodeX;
         else
+        {
             endIndex = nodeY * graph.getColumns() + nodeX;
-        DijkstraController dijksraController = new DijkstraController(rootIndex, endIndex, graph);
+        }
         mouseClicks++;
+    }
+
+    public static String beginClicked()
+    {
+        if(rootIndex == -1)
+            return "Please select a root and destination";
+        if(endIndex == -1)
+            return "Please select a destination";
+        else
+        {
+            DijkstraResult result = new Dijkstra(graph, rootIndex).compute();
+            return "Length of path between " + rootIndex + " and " + endIndex + " is: " + result.pathLengths.get(endIndex);
+        }
     }
 }

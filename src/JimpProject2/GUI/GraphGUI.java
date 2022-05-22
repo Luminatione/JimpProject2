@@ -15,14 +15,14 @@ public class GraphGUI extends GraphGUIWrapper
     static int mouseClicks = 0;
     int nodeSize = 10;
     int padding = (int) (nodeSize * 0.8f);
-    public static Graph graph;
+    public static Graph graph; // shouldn't be static
     double minWeight = Double.MAX_VALUE;
     double maxWeight = 0;
 
     public GraphGUI(Graph graph)
     {
         super();
-        this.graph = graph;
+        this.graph = graph;//???
     }
 
     @Override
@@ -108,7 +108,13 @@ public class GraphGUI extends GraphGUIWrapper
         mouseClicks++;
     }
 
-    public static String beginClicked()
+    public static String beginClicked()//why is it static? It definitely shouldn't be
+            //also why does it return string???
+            //and usage of it doesn't make sense it should go as follows:
+            //user clicks begin, then is asked to click root node
+            //in next stage user can click other nodes and program should mark down path between root and clicked node
+            //also path's length should be APPENDED to console
+            //next click on begin is supposed to start new root selection
     {
         if(rootIndex == -1)
             return "Please select a root and destination";

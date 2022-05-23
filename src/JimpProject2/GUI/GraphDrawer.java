@@ -30,8 +30,6 @@ public class GraphDrawer {
         panel.add(graphGUI);
     }
 
-
-
     public void setGraph(Graph graph)
     {
         this.graph = graph;
@@ -45,5 +43,10 @@ public class GraphDrawer {
             return;
         }
         graphGUI.setNodeSize(size);
+    }
+
+    public GraphGUI getGraphGUI()
+    {
+        return graphGUI;
     }
 }

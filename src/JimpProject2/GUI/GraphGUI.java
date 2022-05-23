@@ -4,25 +4,32 @@ import JimpProject2.algorithm.dijkstra.Dijkstra;
 import JimpProject2.algorithm.dijkstra.DijkstraResult;
 import JimpProject2.graph.Edge;
 import JimpProject2.graph.Graph;
+import JimpProject2.utility.Tuple;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 public class GraphGUI extends GraphGUIWrapper
 {
-    static int rootIndex = -1, endIndex = -1;
-    static int mouseClicks = 0;
-    int nodeSize = 10;
-    int padding = (int) (nodeSize * 0.8f);
-    public static Graph graph; // shouldn't be static
-    double minWeight = Double.MAX_VALUE;
-    double maxWeight = 0;
+    private int nodeSize = 10;
+    private int padding = (int) (nodeSize * 0.8f);
+    private Graph graph;
+    private double minWeight = Double.MAX_VALUE;
+    private double maxWeight = 0;
+
+    private TreeSet <Tuple> highlightedEdges = new TreeSet<>();
+
+    private Consumer<Integer> onNodeClickListeners;
 
     public GraphGUI(Graph graph)
     {
         super();
-        this.graph = graph;//???
+        this.graph = graph;
     }
 
     @Override
@@ -41,12 +48,12 @@ public class GraphGUI extends GraphGUIWrapper
     private void drawNode(Graphics g, int i, int j)
     {
         ((Graphics2D) g).setStroke(new BasicStroke(1));
+        ((Graphics2D) g).setColor(Color.BLACK);
         g.drawOval((nodeSize + padding) * i, (nodeSize + padding) * j, nodeSize, nodeSize);
-        System.out.println(i + " " + j + " -> " + (i * graph.getColumns() + j));
         drawEdges(g, i, j);
     }
 
-    public Color produceColor(double val) {
+    private Color produceColor(double val) {
         //using hsb with normalized weight as hue and excluded violet should be tested
         //this way whole color spectrum can be used and code can be simpler
         int gray = (int) Math.round((double) (val - minWeight) / (double) (maxWeight - minWeight) * 255.0);
@@ -54,9 +61,14 @@ public class GraphGUI extends GraphGUIWrapper
         return color;
     }
 
+    private int twoDtoOneD(int a, int b)
+    {
+        return a * graph.getColumns() + b;
+    }
+
     private void drawEdges(Graphics g, int i, int j)
     {
-        ArrayList<Edge> edges = graph.getNode(i * graph.getColumns() + j).getEdges();
+        ArrayList<Edge> edges = graph.getNode(twoDtoOneD(i, j)).getEdges();
         for (Edge edge : edges)//can be simplified using collections
         {
             if (edge.weight < minWeight)
@@ -66,12 +78,12 @@ public class GraphGUI extends GraphGUIWrapper
         }
         for (Edge edge : edges)
         {
-            Color newColor = produceColor((float)edge.weight);
-            ((Graphics2D) g).setColor(newColor);
+            Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ?  Color.WHITE : produceColor((float)edge.weight);
+            g.setColor(newColor);
             ((Graphics2D) g).setStroke(new BasicStroke(2));
             g.drawLine((nodeSize + padding) * i + nodeSize / 2,
                     (nodeSize + padding) * j + nodeSize / 2,
-                    (nodeSize + padding) * (edge.to/ (graph.getColumns())) + nodeSize / 2,
+                    (nodeSize + padding) * (edge.to / graph.getColumns()) + nodeSize / 2,
                     (nodeSize + padding) * (edge.to % graph.getColumns()) + nodeSize / 2);
         }
     }
@@ -92,38 +104,37 @@ public class GraphGUI extends GraphGUIWrapper
         padding = (int) (size * 0.8f);
     }
 
+    public void addNodeClickListener(Consumer<Integer> listener)
+    {
+         onNodeClickListeners = listener;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e)
     {
         int nodeX = e.getX() / (nodeSize + padding);
         int nodeY = e.getY() / (nodeSize + padding);
-        System.out.println(nodeY * graph.getColumns() + nodeX);
-        System.out.println(graph.getNode(nodeY * graph.getColumns() + nodeX).getEdges());
-        if (mouseClicks % 2 == 0)//??
-            rootIndex = nodeY * graph.getColumns() + nodeX;
-        else
+        int nodeIndex = nodeX * graph.getColumns() + nodeY;
+        if(nodeIndex >= graph.getColumns() * graph.getRows())
         {
-            endIndex = nodeY * graph.getColumns() + nodeX;
+            return;
         }
-        mouseClicks++;
-    }
-
-    public static String beginClicked()//why is it static? It definitely shouldn't be
-            //also why does it return string???
-            //and usage of it doesn't make sense it should go as follows:
-            //user clicks begin, then is asked to click root node
-            //in next stage user can click other nodes and program should mark down path between root and clicked node
-            //also path's length should be APPENDED to console
-            //next click on begin is supposed to start new root selection
-    {
-        if(rootIndex == -1)
-            return "Please select a root and destination";
-        if(endIndex == -1)
-            return "Please select a destination";
-        else
+        if(onNodeClickListeners != null)
         {
-            DijkstraResult result = new Dijkstra(graph, rootIndex).compute();
-            return "Length of path between " + rootIndex + " and " + endIndex + " is: " + result.pathLengths.get(endIndex);
+            onNodeClickListeners.accept(nodeIndex);
+        }
+    }
+    public void drawHighlightedPath(int root, int destination, DijkstraResult paths)
+    {
+        if(destination == -1)
+        {
+            return;
+        }
+        int currentIndex = destination;
+        while(currentIndex != root)
+        {
+            highlightedEdges.add(new Tuple(currentIndex, paths.ancestors.get(currentIndex)));
+            currentIndex = paths.ancestors.get(currentIndex);
         }
     }
 }

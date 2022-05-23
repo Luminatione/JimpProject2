@@ -1,3 +1,4 @@
+import JimpProject2.GUI.DijkstraController;
 import JimpProject2.GUI.GraphGUIWrapper;
 import JimpProject2.GUI.GraphDrawer;
 import JimpProject2.GUI.GraphGUI;
@@ -20,6 +21,8 @@ public class MainWindow extends JFrame
     private Graph graph;
     private GraphFactory currentGraphFactory;
     private GraphDrawer graphDrawer;
+
+    private DijkstraController dijkstraController;
 
     private JFileChooser fileChooser;
 
@@ -140,6 +143,7 @@ public class MainWindow extends JFrame
         {
             graph = currentGraphFactory.create();
             graphDrawer.setGraph(graph);
+            dijkstraController = new DijkstraController(graph, graphDrawer.getGraphGUI(), this::repaintGraph);
         }
         catch (Exception e)
         {
@@ -158,7 +162,7 @@ public class MainWindow extends JFrame
             int maxWeight = Integer.parseInt(maxTextField.getText());
             if(x == 0 || y == 0)
             {
-                throw new IllegalArgumentException("Graphs with 0 as dimension are not supported");
+                throw new IllegalArgumentException("Graphs with 0 as dimension are not supported\n");
             }
             currentGraphFactory = new RandomGraphGenerator(x, y, minWeight, maxWeight);
             displayGraph();
@@ -186,6 +190,7 @@ public class MainWindow extends JFrame
     private void onReloadClick()
     {
         displayGraph();
+        dijkstraController.start();
     }
 
     private void onSaveClick()
@@ -200,18 +205,18 @@ public class MainWindow extends JFrame
         }
         catch (FileNotFoundException e)
         {
-            consoleOutput.append("Unable to create file");
+            consoleOutput.append("Unable to create file\n");
         }
         catch (IOException e)
         {
-            consoleOutput.append("Unable to save to file");
+            consoleOutput.append("Unable to save to file\n");
         }
     }
     private void onBFSClick()
     {
         if(graph == null)
         {
-            consoleOutput.append("Graph had to be loaded first");
+            consoleOutput.append("Graph had to be loaded first\n");
             return;
         }
         boolean result = new BFS(graph).compute();
@@ -221,9 +226,12 @@ public class MainWindow extends JFrame
 
     private void onBeginClick()
     {
-        //consoleOutput.append(GraphGUI.beginClicked());
-        consoleOutput.setText(GraphGUI.beginClicked());
-       //consoleOutput.append("Length of path between " + root + " and " + destination + " is: " + result.pathLengths.get(destination));
+        if(graph == null)
+        {
+            consoleOutput.append("Graph had to be loaded first\n");
+            return;
+        }
+        dijkstraController.start();
     }
 
     public static void main(String[] args)

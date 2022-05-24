@@ -25,7 +25,7 @@ public class Tuple implements Comparable<Tuple>
     @Override
     public int hashCode()
     {
-        return Objects.hash(a, b) + Objects.hash(b, a);
+        return Objects.hash(a, b) + Objects.hash(b, a) + a % (b+1) + b % (a+1);
     }
 
     @Override

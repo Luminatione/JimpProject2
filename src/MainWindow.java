@@ -97,7 +97,14 @@ public class MainWindow extends JFrame
         {
             SwingUtilities.invokeLater(() ->
             {
-                nodeSizeJText.setText("1");
+                try
+                {
+                    Integer.parseInt(nodeSizeJText.getText());
+                }
+                catch (NumberFormatException e1)
+                {
+                    nodeSizeJText.setText("1");
+                }
                 repaintGraph();
             });
         }

@@ -5,7 +5,10 @@ import JimpProject2.GUI.Threading.AlgorithmWorker;
 import JimpProject2.algorithm.dijkstra.Dijkstra;
 import JimpProject2.algorithm.dijkstra.DijkstraResult;
 import java.util.ArrayList;
+import java.util.function.Consumer;
+
 import JimpProject2.graph.Graph;
+import JimpProject2.utility.Logger;
 
 import javax.swing.*;
 
@@ -53,6 +56,8 @@ public class DijkstraController
             destination = nodeIndex;
             graphGUI.drawHighlightedPath(root, destination, result);
             repaint.run();
+            Logger.log("Path length: " + result.pathLengths.get(destination) + "\n");
+
         }
     }
 }

@@ -8,6 +8,7 @@ import JimpProject2.graph.Graph;
 import JimpProject2.graph.graphFactory.GraphFactory;
 import JimpProject2.graph.graphFactory.GraphFileLoader;
 import JimpProject2.graph.graphFactory.RandomGraphGenerator;
+import JimpProject2.utility.Logger;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -57,13 +58,13 @@ public class MainWindow extends JFrame
             bindButtons();
             prepareFileDialogInstance();
             bindNodeSizeChaneListener();
+            Logger.setOutput(consoleOutput::append);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-
     private void bindNodeSizeChaneListener()
     {
         nodeSizeJText.getDocument().addDocumentListener(new DocumentListener()
@@ -157,7 +158,7 @@ public class MainWindow extends JFrame
         }
         catch (Exception e)
         {
-            consoleOutput.append("Exception occurred during graph creation: " + e.getMessage() + "\n");
+            Logger.log("Exception occurred during graph creation: " + e.getMessage() + "\n");
         }
         repaintGraph();
     }
@@ -183,11 +184,11 @@ public class MainWindow extends JFrame
         }
         catch (NumberFormatException e)
         {
-            consoleOutput.append("Wrong number format!\n");
+            Logger.log("Wrong number format!\n");
         }
         catch (IllegalArgumentException e)
         {
-            consoleOutput.append(e.getMessage() + '\n');
+            Logger.log(e.getMessage() + '\n');
         }
     }
 
@@ -219,11 +220,11 @@ public class MainWindow extends JFrame
         }
         catch (FileNotFoundException e)
         {
-            consoleOutput.append("Unable to create file\n");
+            Logger.log("Unable to create file\n");
         }
         catch (IOException e)
         {
-            consoleOutput.append("Unable to save to file\n");
+            Logger.log("Unable to save to file\n");
         }
     }
     private void onBFSComplete(Boolean result)
@@ -235,7 +236,7 @@ public class MainWindow extends JFrame
     {
         if(graph == null)
         {
-            consoleOutput.append("Graph had to be loaded first\n");
+
             return;
         }
         new AlgorithmWorker<>(new BFS(graph), this::onBFSComplete).execute();
@@ -245,7 +246,7 @@ public class MainWindow extends JFrame
     {
         if(graph == null)
         {
-            consoleOutput.append("Graph had to be loaded first\n");
+            Logger.log("Graph had to be loaded first\n");
             return;
         }
         dijkstraController.start();

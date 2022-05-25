@@ -1,6 +1,7 @@
 package JimpProject2.GUI;
 import JimpProject2.GUI.GraphGUI;
 
+import JimpProject2.GUI.Threading.AlgorithmWorker;
 import JimpProject2.algorithm.dijkstra.Dijkstra;
 import JimpProject2.algorithm.dijkstra.DijkstraResult;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class DijkstraController
     DijkstraResult result;
     GraphGUI graphGUI;
     Runnable repaint;
+    AlgorithmWorker<DijkstraResult> worker;
     public DijkstraController(Graph graph, GraphGUI graphGUI, Runnable repaint)
     {
         this.graph = graph;
@@ -33,17 +35,20 @@ public class DijkstraController
     {
         state = State.WAITING_FOR_ROOT;
     }
-
+    private void onDijkstraComplete(DijkstraResult result)
+    {
+        this.result = result;
+    }
     public void onNodeClick(int nodeIndex)
     {
         if(state == State.WAITING_FOR_ROOT)
         {
             root = nodeIndex;
-            dijkstra = new Dijkstra(graph, root);
-            result = dijkstra.compute();
+            worker = new AlgorithmWorker<>(new Dijkstra(graph, root), this::onDijkstraComplete);
+            worker.execute();
             state = State.WAITING_FOR_DESTINATION;
         }
-        else if(state ==  State.WAITING_FOR_DESTINATION)
+        else if(state ==  State.WAITING_FOR_DESTINATION && worker.isDone())
         {
             destination = nodeIndex;
             graphGUI.drawHighlightedPath(root, destination, result);

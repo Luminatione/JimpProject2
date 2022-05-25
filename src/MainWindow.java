@@ -1,7 +1,8 @@
 import JimpProject2.GUI.DijkstraController;
 import JimpProject2.GUI.GraphGUIWrapper;
 import JimpProject2.GUI.GraphDrawer;
-import JimpProject2.GUI.GraphGUI;
+import JimpProject2.GUI.Threading.AlgorithmWorker;
+import JimpProject2.GUI.Threading.GraphFactoryWorker;
 import JimpProject2.algorithm.bfs.BFS;
 import JimpProject2.graph.Graph;
 import JimpProject2.graph.graphFactory.GraphFactory;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.util.function.Consumer;
 
 public class MainWindow extends JFrame
 {
@@ -143,20 +145,25 @@ public class MainWindow extends JFrame
         contentPane.repaint();
         contentPane.revalidate();
     }
-
-    private void displayGraph()
+    private void onGraphReady(Graph graph)
     {
         try
         {
-            graph = currentGraphFactory.create();
+            this.graph = graph;
             graphDrawer.setGraph(graph);
+            nodeSizeJTextValueChanged();
             dijkstraController = new DijkstraController(graph, graphDrawer.getGraphGUI(), this::repaintGraph);
+
         }
         catch (Exception e)
         {
             consoleOutput.append("Exception occurred during graph creation: " + e.getMessage() + "\n");
         }
         repaintGraph();
+    }
+    private void displayGraph()
+    {
+        new GraphFactoryWorker(currentGraphFactory, this::onGraphReady).execute();
     }
 
     private void onGenerateClick()
@@ -219,6 +226,11 @@ public class MainWindow extends JFrame
             consoleOutput.append("Unable to save to file\n");
         }
     }
+    private void onBFSComplete(Boolean result)
+    {
+        BFSOutput.setText(result ? "Consistent" : "Not Consistent");
+        BFSOutput.setForeground(result ? Color.green : Color.red);
+    }
     private void onBFSClick()
     {
         if(graph == null)
@@ -226,9 +238,7 @@ public class MainWindow extends JFrame
             consoleOutput.append("Graph had to be loaded first\n");
             return;
         }
-        boolean result = new BFS(graph).compute();
-        BFSOutput.setText(result ? "Consistent" : "Not Consistent");
-        BFSOutput.setForeground(result ? Color.green : Color.red);
+        new AlgorithmWorker<>(new BFS(graph), this::onBFSComplete).execute();
     }
 
     private void onBeginClick()
@@ -246,3 +256,4 @@ public class MainWindow extends JFrame
         MainWindow dialog = new MainWindow();
     }
 }
+

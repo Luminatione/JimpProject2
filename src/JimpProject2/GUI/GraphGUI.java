@@ -43,7 +43,7 @@ public class GraphGUI extends GraphGUIWrapper {
     private void drawNode(Graphics g, int i, int j) {
         ((Graphics2D) g).setStroke(new BasicStroke(1));
         ((Graphics2D) g).setColor(Color.BLACK);
-        g.drawOval((nodeSize + padding) * i, (nodeSize + padding) * j, nodeSize, nodeSize);
+        g.fillOval((nodeSize + padding) * i, (nodeSize + padding) * j, nodeSize, nodeSize);
         drawEdges(g, i, j);
     }
 
@@ -114,10 +114,20 @@ public class GraphGUI extends GraphGUIWrapper {
             return;
         }
         int currentIndex = destination;
-        while (currentIndex != root && paths.ancestors.get(currentIndex) != -1) {
-            highlightedEdges.add(new Tuple(currentIndex, paths.ancestors.get(currentIndex)));
+        ArrayList<Tuple> toDraw = new ArrayList<>(paths.ancestors.size());
+        boolean validPath = true;
+        while (currentIndex != root) {
+            toDraw.add(new Tuple(currentIndex, paths.ancestors.get(currentIndex)));
+            if(paths.ancestors.get(currentIndex) == -1)
+            {
+                validPath = false;
+                break;
+            }
             currentIndex = paths.ancestors.get(currentIndex);
-
+        }
+        if(validPath)
+        {
+            highlightedEdges.addAll(toDraw);
         }
     }
 }

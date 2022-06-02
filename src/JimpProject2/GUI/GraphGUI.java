@@ -14,39 +14,33 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
-public class GraphGUI extends GraphGUIWrapper
-{
+public class GraphGUI extends GraphGUIWrapper {
     private int nodeSize = 10;
     private int padding = (int) (nodeSize * 0.8f);
     private Graph graph;
     private double minWeight = Double.MAX_VALUE;
     private double maxWeight = 0;
 
-    private TreeSet <Tuple> highlightedEdges = new TreeSet<>();
+    private TreeSet<Tuple> highlightedEdges = new TreeSet<>();
 
     private Consumer<Integer> onNodeClickListeners;
 
-    public GraphGUI(Graph graph)
-    {
+    public GraphGUI(Graph graph) {
         super();
         this.graph = graph;
     }
 
     @Override
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < graph.getRows(); i++)
-        {
-            for (int j = 0; j < graph.getColumns(); j++)
-            {
+        for (int i = 0; i < graph.getRows(); i++) {
+            for (int j = 0; j < graph.getColumns(); j++) {
                 drawNode(g, i, j);
             }
         }
     }
 
-    private void drawNode(Graphics g, int i, int j)
-    {
+    private void drawNode(Graphics g, int i, int j) {
         ((Graphics2D) g).setStroke(new BasicStroke(1));
         ((Graphics2D) g).setColor(Color.BLACK);
         g.drawOval((nodeSize + padding) * i, (nodeSize + padding) * j, nodeSize, nodeSize);
@@ -61,13 +55,11 @@ public class GraphGUI extends GraphGUIWrapper
         return color;
     }
 
-    private int twoDtoOneD(int a, int b)
-    {
+    private int twoDtoOneD(int a, int b) {
         return a * graph.getColumns() + b;
     }
 
-    private void drawEdges(Graphics g, int i, int j)
-    {
+    private void drawEdges(Graphics g, int i, int j) {
         ArrayList<Edge> edges = graph.getNode(twoDtoOneD(i, j)).getEdges();
         for (Edge edge : edges)//can be simplified using collections
         {
@@ -76,9 +68,8 @@ public class GraphGUI extends GraphGUIWrapper
             if (edge.weight > maxWeight)
                 maxWeight = edge.weight;
         }
-        for (Edge edge : edges)
-        {
-            Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ?  Color.WHITE : produceColor((float)edge.weight);
+        for (Edge edge : edges) {
+            Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ? Color.WHITE : produceColor((float) edge.weight);
             g.setColor(newColor);
             ((Graphics2D) g).setStroke(new BasicStroke(2));
             g.drawLine((nodeSize + padding) * i + nodeSize / 2,
@@ -89,52 +80,44 @@ public class GraphGUI extends GraphGUIWrapper
     }
 
     @Override
-    public Dimension getPreferredSize()
-    {
-        if (graph == null)
-        {
+    public Dimension getPreferredSize() {
+        if (graph == null) {
             return new Dimension(0, 0);
         }
         return new Dimension((nodeSize + padding) * graph.getRows(), (nodeSize + padding) * graph.getColumns());
     }
 
-    public void setNodeSize(int size)
-    {
+    public void setNodeSize(int size) {
         nodeSize = size;
         padding = (int) (size * 0.8f);
     }
 
-    public void addNodeClickListener(Consumer<Integer> listener)
-    {
-         onNodeClickListeners = listener;
+    public void addNodeClickListener(Consumer<Integer> listener) {
+        onNodeClickListeners = listener;
     }
 
     @Override
-    public void mouseClicked(MouseEvent e)
-    {
+    public void mouseClicked(MouseEvent e) {
         int nodeX = e.getX() / (nodeSize + padding);
         int nodeY = e.getY() / (nodeSize + padding);
         int nodeIndex = nodeX * graph.getColumns() + nodeY;
-        if(nodeIndex >= graph.getColumns() * graph.getRows())
-        {
+        if (nodeIndex >= graph.getColumns() * graph.getRows()) {
             return;
         }
-        if(onNodeClickListeners != null)
-        {
+        if (onNodeClickListeners != null) {
             onNodeClickListeners.accept(nodeIndex);
         }
     }
-    public void drawHighlightedPath(int root, int destination, DijkstraResult paths)
-    {
-        if(destination == -1)
-        {
+
+    public void drawHighlightedPath(int root, int destination, DijkstraResult paths) {
+        if (destination == -1) {
             return;
         }
         int currentIndex = destination;
-        while(currentIndex != root)
-        {
+        while (currentIndex != root && paths.ancestors.get(currentIndex) != -1) {
             highlightedEdges.add(new Tuple(currentIndex, paths.ancestors.get(currentIndex)));
             currentIndex = paths.ancestors.get(currentIndex);
+
         }
     }
 }

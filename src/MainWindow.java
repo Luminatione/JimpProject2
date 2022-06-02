@@ -43,7 +43,7 @@ public class MainWindow extends JFrame
     private JTextField maxTextField;
     private JLabel BFSOutput;
     private JTextField nodeSizeJText;
-    private GraphGUIWrapper graphElement;
+    private JScrollPane scrollPane;
 
     public MainWindow()
     {
@@ -144,6 +144,7 @@ public class MainWindow extends JFrame
     {
         contentPane.repaint();
         contentPane.revalidate();
+        scrollPane.updateUI();
     }
     private void onGraphReady(Graph graph)
     {

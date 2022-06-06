@@ -53,7 +53,7 @@ public class GraphGUI extends GraphGUIWrapper {
     }
 
     private Color produceColor(double val) {
-        return Color.getHSBColor((float) ((val - minWeight) / (maxWeight - minWeight) * 0.9), 1, 1);
+        return Color.getHSBColor((float) ((val - minWeight) / (maxWeight - minWeight) * 0.9), 1, 0.7f);
     }
 
     private int twoDtoOneD(int a, int b) {
@@ -63,7 +63,7 @@ public class GraphGUI extends GraphGUIWrapper {
     private void drawEdges(Graphics g, int i, int j) {
         ArrayList<Edge> edges = graph.getNode(twoDtoOneD(i, j)).getEdges();
         for (Edge edge : edges) {
-            Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ? Color.WHITE : produceColor((float) edge.weight);
+            Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ? Color.WHITE : produceColor(edge.weight);
             g.setColor(newColor);
             ((Graphics2D) g).setStroke(new BasicStroke(2));
             g.drawLine((nodeSize + padding) * i + nodeSize / 2,

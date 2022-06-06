@@ -229,7 +229,7 @@ public class MainWindow extends JFrame
     }
     private void onBFSComplete(Boolean result)
     {
-        BFSOutput.setText(result ? "Consistent" : "Not Consistent");
+        BFSOutput.setText(result ? "Connected" : "Not Connected");
         BFSOutput.setForeground(result ? Color.green : Color.red);
     }
     private void onBFSClick()

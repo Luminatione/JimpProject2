@@ -53,7 +53,7 @@ public class GraphGUI extends GraphGUIWrapper {
     }
 
     private Color produceColor(double val) {
-        return Color.getHSBColor((float) ((val - minWeight) / (maxWeight - minWeight)), 1, 1);
+        return Color.getHSBColor((float) ((val - minWeight) / (maxWeight - minWeight) * 0.9), 1, 1);
     }
 
     private int twoDtoOneD(int a, int b) {

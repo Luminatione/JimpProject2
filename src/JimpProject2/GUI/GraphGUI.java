@@ -18,8 +18,8 @@ public class GraphGUI extends GraphGUIWrapper {
     private int nodeSize = 10;
     private int padding = (int) (nodeSize * 0.8f);
     private Graph graph;
-    private double minWeight = Double.MAX_VALUE;
-    private double maxWeight = 0;
+    private Double minWeight = Double.MAX_VALUE;
+    private Double maxWeight = 0.0;
 
     private TreeSet<Tuple> highlightedEdges = new TreeSet<>();
 
@@ -33,6 +33,11 @@ public class GraphGUI extends GraphGUIWrapper {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        for(int i = 0; i < graph.getRows()* graph.getColumns(); i++)
+        {
+            minWeight = graph.getNode(i).getEdges().stream().map(x -> x.weight).min(Double::compareTo).orElse(Double.MAX_VALUE);
+            maxWeight = graph.getNode(i).getEdges().stream().map(x -> x.weight).max(Double::compareTo).orElse(0.0);
+        }
         for (int i = 0; i < graph.getRows(); i++) {
             for (int j = 0; j < graph.getColumns(); j++) {
                 drawNode(g, i, j);
@@ -48,11 +53,7 @@ public class GraphGUI extends GraphGUIWrapper {
     }
 
     private Color produceColor(double val) {
-        //using hsb with normalized weight as hue and excluded violet should be tested
-        //this way whole color spectrum can be used and code can be simpler
-        int gray = (int) Math.round((double) (val - minWeight) / (double) (maxWeight - minWeight) * 255.0);
-        Color color = new Color(gray, 0, 255 - gray);
-        return color;
+        return Color.getHSBColor((float) ((val - minWeight) / (maxWeight - minWeight)), 1, 1);
     }
 
     private int twoDtoOneD(int a, int b) {
@@ -61,13 +62,6 @@ public class GraphGUI extends GraphGUIWrapper {
 
     private void drawEdges(Graphics g, int i, int j) {
         ArrayList<Edge> edges = graph.getNode(twoDtoOneD(i, j)).getEdges();
-        for (Edge edge : edges)//can be simplified using collections
-        {
-            if (edge.weight < minWeight)
-                minWeight = edge.weight;
-            if (edge.weight > maxWeight)
-                maxWeight = edge.weight;
-        }
         for (Edge edge : edges) {
             Color newColor = highlightedEdges.contains(new Tuple(twoDtoOneD(i, j), edge.to)) ? Color.WHITE : produceColor((float) edge.weight);
             g.setColor(newColor);

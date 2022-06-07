@@ -17,7 +17,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.util.function.Consumer;
 
 public class MainWindow extends JFrame
 {
@@ -44,7 +43,7 @@ public class MainWindow extends JFrame
     private JTextField maxTextField;
     private JLabel BFSOutput;
     private JTextField nodeSizeJText;
-    private GraphGUIWrapper graphElement;
+    private JScrollPane scrollPane;
 
     public MainWindow()
     {
@@ -145,6 +144,7 @@ public class MainWindow extends JFrame
     {
         contentPane.repaint();
         contentPane.revalidate();
+        scrollPane.updateUI();
     }
     private void onGraphReady(Graph graph)
     {
@@ -229,7 +229,7 @@ public class MainWindow extends JFrame
     }
     private void onBFSComplete(Boolean result)
     {
-        BFSOutput.setText(result ? "Consistent" : "Not Consistent");
+        BFSOutput.setText(result ? "Connected" : "Not Connected");
         BFSOutput.setForeground(result ? Color.green : Color.red);
     }
     private void onBFSClick()

@@ -24,7 +24,7 @@ public class Dijkstra extends Algorithm<DijkstraResult> {
     public DijkstraResult compute()
     {
         result = new DijkstraResult(graph, rootIndex);
-        toVisit = new PriorityQueue<>(11, Comparator.comparingDouble((Edge a) -> a.weight));
+        toVisit = new PriorityQueue<>(graph.getColumns() + graph.getRows(), Comparator.comparingDouble((Edge a) -> a.weight));
         visitsStates = new ArrayList<>(Collections.nCopies(graph.getColumns() * graph.getRows(), false));
         toVisit.add(new Edge(rootIndex, 0));
         visitsStates.set(rootIndex, true);
